@@ -398,3 +398,28 @@ def custom_check(check_func, df, *args, **kwargs):
         raise
 
     return df
+
+
+def column_compare(df, col_a, col_b, func):
+    """Asserts that two columns adhere to the condition.
+
+    Args:
+        df (pd.DataFrame): Any pd.DataFrame.
+        col_a (str): First column name.
+        col_b (str): Second column name.
+        func (<function>): Function to compare columns.
+
+    Returns:
+        Original `df`.
+
+    """
+    try:
+        vfunc = np.vectorize(func)
+        result = vfunc(df[col_a], df[col_b])
+
+        if not np.all(result):
+            raise AssertionError("Column comparison failed. Failed column indices: {}".format(np.argwhere(result!=True)))
+    except Exception as e:
+        raise
+
+    return df
