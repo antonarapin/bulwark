@@ -390,3 +390,11 @@ def test_custom_check():
 
     with pytest.raises(AssertionError):
         dc.CustomCheck(f, 4)(_noop)(df)
+
+
+def test_column_compare():
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+
+    tm.assert_frame_equal(df, ck.column_compare(df, 'b', 'a', lambda x, y: x > y))
+    with pytest.raises(AssertionError):
+        result = ck.column_compare(df, 'a', 'b', lambda x, y: x > y)
